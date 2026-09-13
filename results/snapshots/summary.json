@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-09-13T06:28:16Z",
+ "generated_utc": "2026-09-13T21:38:08Z",
  "source": "snapshots",
- "headline": "Over 1.0 h of 1.0s order-book polling, I found 50 no-arbitrage violation episodes before fees across 4 events; 4 were profitable after fees at the best available size (0 after the stale-quote filter). Median lifetime was between 919ms and 2.9s. Measured reaction time is ~688ms (1.4s worst case); an estimated 89% of violations outlived it. In replay, 0 of 2 fee-positive signals filled both legs, for simulated P&L of $-2.06 ($0.00 counting only fills that were certain).",
+ "headline": "Over 16.0 h of 1.0s order-book polling, I found 192 no-arbitrage violation episodes before fees across 8 events; 8 were profitable after fees at the best available size (2 after the stale-quote filter). Median lifetime was between 0ms and 2.3s. Measured reaction time is ~688ms (1.4s worst case); an estimated 88% of violations outlived it. In replay, 0 of 6 fee-positive signals filled both legs, for simulated P&L of $-29.78 ($0.00 counting only fills that were certain).",
  "budget": {
   "typical": 0.6880842499958817,
   "worst": 1.4016575559515332
@@ -13,83 +13,85 @@
  },
  "groups": {
   "all": {
-   "episodes": 50,
-   "events": 4,
-   "net_best_pos": 4,
+   "episodes": 192,
+   "events": 8,
+   "net_best_pos": 8,
    "net_1_pos": 3,
-   "share_net_best_pos": 0.08,
-   "median_lo": 0.9185720682144165,
-   "median_hi": 2.907810926437378,
-   "definitely_outlived_typical": 0.56,
+   "share_net_best_pos": 0.041666666666666664,
+   "median_lo": 0.0,
+   "median_hi": 2.272281527519226,
+   "definitely_outlived_typical": 0.4947916666666667,
    "km_outlived_typical": 1.0,
-   "catch_km": 0.8929199999999999
+   "catch_km": 0.8830208333333334
   },
   "stale-quote filtered": {
-   "episodes": 18,
-   "events": 3,
-   "net_best_pos": 0,
+   "episodes": 112,
+   "events": 6,
+   "net_best_pos": 2,
    "net_1_pos": 0,
-   "share_net_best_pos": 0.0,
+   "share_net_best_pos": 0.017857142857142856,
    "median_lo": 0.0,
-   "median_hi": 2.1258504390716553,
-   "definitely_outlived_typical": 0.4444444444444444,
+   "median_hi": 2.1239969730377197,
+   "definitely_outlived_typical": 0.4375,
    "km_outlived_typical": 1.0,
-   "catch_km": 0.8653333333333334
+   "catch_km": 0.8727589285714287
   },
   "positive after fees": {
-   "episodes": 4,
-   "events": 1,
-   "net_best_pos": 4,
+   "episodes": 8,
+   "events": 4,
+   "net_best_pos": 8,
    "net_1_pos": 3,
    "share_net_best_pos": 1.0,
-   "median_lo": 1.5187584161758423,
-   "median_hi": 3.5826929807662964,
-   "definitely_outlived_typical": 1.0,
+   "median_lo": 0.9370094537734985,
+   "median_hi": 2.96247398853302,
+   "definitely_outlived_typical": 0.625,
    "km_outlived_typical": 1.0,
-   "catch_km": 1.0
+   "catch_km": 0.91275
   },
   "filtered and positive after fees": {
-   "episodes": 0,
-   "events": 0,
-   "net_best_pos": 0,
+   "episodes": 2,
+   "events": 2,
+   "net_best_pos": 2,
    "net_1_pos": 0,
-   "share_net_best_pos": null,
-   "median_lo": null,
-   "median_hi": null,
-   "definitely_outlived_typical": null,
-   "km_outlived_typical": null,
-   "catch_km": null
+   "share_net_best_pos": 1.0,
+   "median_lo": 0.0,
+   "median_hi": 2.0877498388290405,
+   "definitely_outlived_typical": 0.0,
+   "km_outlived_typical": 1.0,
+   "catch_km": 0.8185
   }
  },
  "replay": {
+  "signals": 6,
+  "outcomes": {
+   "legged (book changed)": 4,
+   "partial (book changed)": 2
+  },
+  "full_fill_rate": 0.0,
+  "leg_risk_incidents": 6,
+  "planned_pnl": "4.585300",
+  "simulated_pnl": "-29.778600",
+  "simulated_pnl_certain_only": "0",
+  "written_off_contracts": "500.00"
+ },
+ "replay_filtered": {
   "signals": 2,
   "outcomes": {
-   "legged (book changed)": 1,
-   "partial (book changed)": 1
+   "legged (book changed)": 2
   },
   "full_fill_rate": 0.0,
   "leg_risk_incidents": 2,
-  "planned_pnl": "0.123900",
-  "simulated_pnl": "-2.055800",
+  "planned_pnl": "0.471400",
+  "simulated_pnl": "-21.642800",
   "simulated_pnl_certain_only": "0",
   "written_off_contracts": "0.00"
- },
- "replay_filtered": {
-  "signals": 0,
-  "outcomes": {},
-  "full_fill_rate": null,
-  "leg_risk_incidents": 0,
-  "planned_pnl": "0",
-  "simulated_pnl": "0",
-  "simulated_pnl_certain_only": "0",
-  "written_off_contracts": "0"
  },
  "data": {
   "interval": 1.0,
   "sessions": 1,
-  "batches": 14384,
+  "batches": 229132,
   "failed_batches": 0,
   "t_first": 1789277282.1358058,
-  "t_last": 1789280893.114388
+  "t_last": 1789334882.0306392
  }
 }

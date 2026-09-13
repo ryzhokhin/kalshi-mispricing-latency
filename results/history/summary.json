@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-09-13T06:28:11Z",
+ "generated_utc": "2026-09-13T21:38:17Z",
  "source": "history",
  "headline": "Over 168.0 h of 60.0s candles, I found 77 no-arbitrage violation episodes before fees across 16 events; 4 were profitable after fees at the best available size (0 after the stale-quote filter). Median lifetime was between 4.0m and 6.0m. Candle data cannot resolve anything faster than a minute, so it says nothing about a sub-second budget.",
  "budget": {

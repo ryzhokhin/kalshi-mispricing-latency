@@ -4,21 +4,23 @@ How often do Kalshi prediction-market prices break hard no-arbitrage rules, how 
 
 The project records live order books for ~300 Kalshi markets, detects every executable violation of logical price constraints, charges Kalshi's fee schedule at the size the book actually offers, measures how long each violation survives, measures the detect-to-order reaction time without placing orders, and replays simulated orders against the recorded books. A local dashboard runs the same pipeline live with alerts.
 
+**Finding.** Violations exist, almost entirely on in-play sports events, but over a 16-hour recording none could have been captured: fees remove nearly all of them, the rest are either too thin to trade or last only while books reprice, and every simulated order left at least one leg unfilled.
+
 **Write-up:** [paper/paper.md](paper/paper.md) — constraints and proofs, fee model, lifetime estimation with censoring, reaction-time decomposition, execution replay and robustness.
 
 ## Results
 
 <!-- RESULTS:START -->
-Over 1.0 h of 1.0s order-book polling, I found 50 no-arbitrage violation episodes before fees across 4 events; 4 were profitable after fees at the best available size (0 after the stale-quote filter). Median lifetime was between 919ms and 2.9s. Measured reaction time is ~688ms (1.4s worst case); an estimated 89% of violations outlived it. In replay, 0 of 2 fee-positive signals filled both legs, for simulated P&L of $-2.06 ($0.00 counting only fills that were certain).
+Over 16.0 h of 1.0s order-book polling, I found 192 no-arbitrage violation episodes before fees across 8 events; 8 were profitable after fees at the best available size (2 after the stale-quote filter). Median lifetime was between 0ms and 2.3s. Measured reaction time is ~688ms (1.4s worst case); an estimated 88% of violations outlived it. In replay, 0 of 6 fee-positive signals filled both legs, for simulated P&L of $-29.78 ($0.00 counting only fills that were certain).
 
 |  | all | stale-quote filtered |
 |---|---|---|
-| violation episodes (before fees) | 50 | 18 |
-| positive after fees | 4 | 0 |
-| median lifetime | 919ms – 2.9s | 0ms – 2.1s |
+| violation episodes (before fees) | 192 | 112 |
+| positive after fees | 8 | 2 |
+| median lifetime | 0ms – 2.3s | 0ms – 2.1s |
 | reaction time (typical / worst) | 688ms / 1.4s |  |
-| catch probability (Kaplan–Meier) | 89% | 87% |
-| replay: signals / full fills / simulated P&L | 2 / 0% / $-2.06 |  |
+| catch probability (Kaplan–Meier) | 88% | 87% |
+| replay: signals / full fills / simulated P&L | 6 / 0% / $-29.78 |  |
 
 ![How long violations survive](results/snapshots/lifetimes_all.png)
 
@@ -70,7 +72,7 @@ On start the dashboard replays the recording so far (a few seconds per hour of d
 - Kalshi public market-data REST API (`api.elections.kalshi.com/trade-api/v2`), no authentication.
 - Order books from the batch endpoint `/markets/orderbooks` (≤ 100 tickers per call), about once per second, top 10 levels per side. Each event's markets share a call so legs are observed at the same instant. Only changed books are stored; restarts are separate sessions.
 - One-minute candlesticks (bid/ask OHLC, no sizes) for the history study.
-- Raw recordings stay local (`data/`, a few hundred MB per day). `scripts/backup_data.sh` archives them.
+- Raw recordings stay local (`data/`); only changed books are stored and each hour is gzipped, so the 16-hour recording is about 17 MB. `scripts/backup_data.sh` archives them.
 
 ## Limitations
 

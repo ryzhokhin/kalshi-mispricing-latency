@@ -17,6 +17,7 @@ import csv
 import io
 import json
 import mimetypes
+import os
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -141,7 +142,7 @@ def make_handler(engine):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--host", default="127.0.0.1")
-    ap.add_argument("--port", type=int, default=8050)
+    ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8050)))
     ap.add_argument("--universe", default="data/universe.json")
     ap.add_argument("--series-fees", default="data/series_fees.json")
     ap.add_argument("--snapshots", default="data/snapshots")

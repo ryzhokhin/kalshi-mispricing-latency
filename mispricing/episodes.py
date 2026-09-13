@@ -372,10 +372,9 @@ def plot(eps, meta, source, out_png, title="How long Kalshi no-arbitrage violati
                         label=f"{label}: lifetime bounds (n={n})")
         ax.step(xs, [km_at(curve, x) for x in xs], where="post", color=color, linewidth=2,
                 label=f"{label}: Kaplan-Meier")
-    for (name, T), y in zip(budget.items(), (0.06, 0.12)):  # staggered so the two labels never collide
-        ax.axvline(T, color=INK2, linewidth=1, linestyle=(0, (4, 3)))
-        ax.text(T, y, f" {name} budget {fmt_s(T)}", color=INK2, fontsize=7, va="bottom", ha="left",
-                bbox={"facecolor": SURFACE, "edgecolor": "none", "pad": 1})
+    # Budgets go in the legend, not as text on the plot, so no label ever covers a curve.
+    for (name, T), dash in zip(budget.items(), ((0, (4, 3)), (0, (1, 2)))):
+        ax.axvline(T, color=INK2, linewidth=1, linestyle=dash, label=f"{name} reaction-time budget ({fmt_s(T)})")
 
     ax.set_xscale("log")
     ax.set_ylim(0, 1.0)
