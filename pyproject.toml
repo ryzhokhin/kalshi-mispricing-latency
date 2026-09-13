@@ -1,0 +1,20 @@
+[project]
+name = "kalshi-mispricing"
+version = "0.1.0"
+description = "Detect no-arbitrage violations on Kalshi, charge fees, measure how long they survive and whether a retail-latency trader could catch them."
+requires-python = ">=3.11"
+dependencies = ["requests>=2.32", "matplotlib>=3.9"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["mispricing", "dashboard"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
