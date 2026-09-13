@@ -1,0 +1,74 @@
+{
+ "generated_utc": "2026-09-13T06:28:11Z",
+ "source": "history",
+ "headline": "Over 168.0 h of 60.0s candles, I found 77 no-arbitrage violation episodes before fees across 16 events; 4 were profitable after fees at the best available size (0 after the stale-quote filter). Median lifetime was between 4.0m and 6.0m. Candle data cannot resolve anything faster than a minute, so it says nothing about a sub-second budget.",
+ "budget": {
+  "typical": 30.18808424999588,
+  "worst": 60.40165755595153
+ },
+ "filters": {
+  "min_volume_24h": 100.0,
+  "min_top_size": 5.0,
+  "max_spread": 0.1
+ },
+ "groups": {
+  "all": {
+   "episodes": 77,
+   "events": 16,
+   "net_best_pos": 4,
+   "net_1_pos": 0,
+   "share_net_best_pos": 0.05194805194805195,
+   "median_lo": 240.0,
+   "median_hi": 360.0,
+   "definitely_outlived_typical": 0.6623376623376623,
+   "km_outlived_typical": 1.0,
+   "catch_km": 0.999671052631579
+  },
+  "stale-quote filtered": {
+   "episodes": 45,
+   "events": 16,
+   "net_best_pos": 0,
+   "net_1_pos": 0,
+   "share_net_best_pos": 0.0,
+   "median_lo": 240.0,
+   "median_hi": 360.0,
+   "definitely_outlived_typical": 0.6444444444444445,
+   "km_outlived_typical": 1.0,
+   "catch_km": 0.9996444444444443
+  },
+  "positive after fees": {
+   "episodes": 4,
+   "events": 1,
+   "net_best_pos": 4,
+   "net_1_pos": 0,
+   "share_net_best_pos": 1.0,
+   "median_lo": 630.0,
+   "median_hi": 750.0,
+   "definitely_outlived_typical": 1.0,
+   "km_outlived_typical": 1.0,
+   "catch_km": 1.0
+  },
+  "filtered and positive after fees": {
+   "episodes": 0,
+   "events": 0,
+   "net_best_pos": 0,
+   "net_1_pos": 0,
+   "share_net_best_pos": null,
+   "median_lo": null,
+   "median_hi": null,
+   "definitely_outlived_typical": null,
+   "km_outlived_typical": null,
+   "catch_km": null
+  }
+ },
+ "replay": null,
+ "replay_filtered": null,
+ "data": {
+  "interval": 60.0,
+  "sessions": 1,
+  "batches": 9983,
+  "failed_batches": 0,
+  "t_first": 1788653400,
+  "t_last": 1789258140
+ }
+}
