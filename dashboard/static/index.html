@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kalshi Mispricing Monitor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">Kalshi mispricing monitor <span>· no-arbitrage violations, after fees</span></div>
+    <span id="status" class="status waiting">connecting</span>
+    <div class="meta" id="meta"></div>
+    <div class="spacer"></div>
+    <div class="controls">
+      <label>alert if net ≥ $<input id="minNet" type="number" step="0.01" min="0" value="0.00"></label>
+      <label><input id="onlyTradeable" type="checkbox" checked> tradeable only</label>
+      <button id="notifyBtn" class="btn">Enable notifications</button>
+      <button id="soundBtn" class="btn">Sound off</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="live" class="active">Live</button>
+    <button data-tab="analysis">Lifetimes &amp; replay</button>
+    <button data-tab="episodes">Episodes</button>
+    <button data-tab="history">7-day history</button>
+    <button data-tab="method">Method</button>
+  </nav>
+
+  <main>
+    <section id="tab-live">
+      <div class="kpis" id="kpis"></div>
+      <div class="grid-2">
+        <div class="card">
+          <header>
+            <h2>Open violations</h2>
+            <span class="hint">visible in the latest poll · click a row for the books</span>
+          </header>
+          <div class="body scroll" id="openTable"></div>
+        </div>
+        <div class="card">
+          <header>
+            <h2>Alerts</h2>
+            <span class="hint">new violations positive after fees, with the replay verdict</span>
+          </header>
+          <div class="body scroll alerts" id="alerts"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <header><h2>Violations per minute</h2><span class="hint">distinct violations seen in each minute</span></header>
+        <div class="legend"><span><i style="background:var(--series-1)"></i>all, before fees</span><span><i style="background:var(--series-2)"></i>positive after fees</span></div>
+        <div class="chart" id="timelineChart"></div>
+      </div>
+    </section>
+
+    <section id="tab-analysis" hidden>
+      <div class="grid-charts">
+        <div class="card">
+          <header><h2>How long violations survive</h2><span class="hint" id="survivalHint"></span></header>
+          <div class="legend"><span><i class="band" style="background:var(--band-1)"></i>lifetime bounds</span><span><i style="background:var(--series-1)"></i>Kaplan–Meier estimate</span><span><i style="background:var(--text-muted)"></i>reaction-time budget</span></div>
+          <div class="chart" id="survivalChart"></div>
+        </div>
+        <div class="card">
+          <header><h2>Reaction time</h2><span class="hint" id="latencyHint"></span></header>
+          <div class="chart" id="latencyChart"></div>
+          <div class="body" id="latencyTable"></div>
+        </div>
+        <div class="card">
+          <header><h2>Execution replay</h2><span class="hint">IOC orders on every leg, filled against the next recorded book</span></header>
+          <div class="body" id="replaySummary"></div>
+          <div class="chart" id="replayChart"></div>
+        </div>
+        <div class="card">
+          <header><h2>Violations by kind</h2><span class="hint">episodes this recording</span></header>
+          <div class="body" id="kindTable"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <header><h2>Replayed signals</h2><span class="right"><a href="/api/export/replay.csv">export CSV</a></span></header>
+        <div class="body scroll" id="replayTable"></div>
+      </div>
+    </section>
+
+    <section id="tab-episodes" hidden>
+      <div class="card">
+        <header>
+          <h2>Closed episodes</h2>
+          <div class="right filters">
+            <select id="epKind"><option value="">all kinds</option><option>ladder</option><option>set_short</option><option>set_long</option><option>yes_no_cross</option></select>
+            <label><input type="checkbox" id="epPositive"> positive after fees</label>
+            <a href="/api/export/episodes.csv">export CSV</a>
+            <a href="/api/export/alerts.csv">alerts CSV</a>
+          </div>
+        </header>
+        <div class="body scroll" id="episodesTable" style="max-height:none"></div>
+      </div>
+    </section>
+
+    <section id="tab-history" hidden>
+      <div class="headline" id="historyHeadline">Loading the 7-day candle study…</div>
+      <div class="kpis" id="historyKpis"></div>
+      <div class="grid-charts">
+        <div class="card">
+          <header><h2>Lifetimes at 1-minute resolution</h2><span class="hint">nothing under a minute is resolvable here</span></header>
+          <div class="legend"><span><i class="band" style="background:var(--band-1)"></i>lifetime bounds</span><span><i style="background:var(--series-1)"></i>Kaplan–Meier estimate</span></div>
+          <div class="chart" id="historySurvival"></div>
+        </div>
+        <div class="card">
+          <header><h2>Episodes by kind</h2></header>
+          <div class="body" id="historyKinds"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <header><h2>History episodes</h2></header>
+        <div class="body scroll" id="historyTable"></div>
+      </div>
+    </section>
+
+    <section id="tab-method" hidden>
+      <div class="card"><div class="body prose">
+        <h3>What counts as a violation</h3>
+        <p>Every detector asks one question: is there a basket of contracts that pays at least <i>W</i> dollars in every outcome, and can it be bought for less than <i>W</i> after Kalshi's fees? Every leg is a taker buy at the ask; selling YES at the bid is the same trade as buying NO at 1 − bid.</p>
+        <ul>
+          <li><b>ladder</b> — "X above K₁" and "X above K₂" with K₁ &lt; K₂: buy YES on K₁ and NO on K₂; pays at least $1. A violation means bid(K₂) &gt; ask(K₁).</li>
+          <li><b>set_short</b> — mutually exclusive outcomes: buy NO on all n; pays at least n − 1.</li>
+          <li><b>set_long</b> — buy YES on all n; pays exactly $1 only if the set is complete, so it is only evaluated once every other market in the event has closed.</li>
+          <li><b>yes_no_cross</b> — YES and NO of one market for under $1. The matching engine should make this impossible; seeing one points at stale data.</li>
+        </ul>
+        <h3>Fees</h3>
+        <p>Taker fee = roundup(0.07 × m × C × P × (1 − P)), rounded up to the cent once per order; <i>m</i> is the series multiplier read from the API. Edges are walked through the book level by level and the size with the best net P&amp;L is kept.</p>
+        <h3>Tradeable</h3>
+        <p>A violation is shown as tradeable when every leg traded at least <span id="fVol"></span> contracts in the 24 h before the market list was built, at least <span id="fSize"></span> baskets sit at the best prices, and every leg's bid–ask spread is at most <span id="fSpread"></span>.</p>
+        <h3>Lifetimes and reaction time</h3>
+        <p>Books are polled about once a second, so a lifetime is known only as an interval: seen from poll t<sub>s</sub> to t<sub>e</sub> means it lived between t<sub>e</sub> − t<sub>s</sub> and t<sub>next</sub> − t<sub>prev</sub>. Open episodes count as censored in the Kaplan–Meier estimate. Reaction time = detection lag (uniform over the poll interval) + book fetch + compute + order round trip, measured with <code>python -m mispricing.latency</code>.</p>
+        <h3>Replay</h3>
+        <p>Each alert becomes immediate-or-cancel limit buys on every leg (capped at 500 baskets) that land after a sampled reaction time and fill against the next recorded book. If the legs' books did not change in between, the fill is certain; if they changed, the new book is used. Unhedged contracts are sold back into the bids at a second fee. No order is ever sent.</p>
+      </div></div>
+    </section>
+  </main>
+
+  <div id="modalRoot"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
